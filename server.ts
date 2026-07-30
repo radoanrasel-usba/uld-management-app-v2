@@ -1,4 +1,9 @@
+import dns from 'node:dns';
 import express from 'express';
+
+if (dns.setDefaultResultOrder) {
+  dns.setDefaultResultOrder('ipv4first');
+}
 import path from 'path';
 import { createServer as createViteServer } from 'vite';
 import { eq } from 'drizzle-orm';
