@@ -671,32 +671,38 @@ export async function ensureTablesExist() {
 
 export async function seedUldsIfEmpty() {
   try {
-    const existing = await db.select().from(ulds).limit(1);
-    if (existing.length > 0) {
-      console.log('[SEED] Database already contains ULDs. Skipping auto-seeding.');
+    const existing = await db.select().from(ulds).limit(10);
+    const hasOldFormat = existing.some(u => u.number.includes('UB') || u.number.startsWith('AKE0') || u.number.startsWith('PMC0'));
+
+    if (existing.length > 0 && !hasOldFormat) {
+      console.log('[SEED] Database already contains updated ULDs. Skipping auto-seeding.');
       return;
     }
 
-    console.log('[SEED] Database is empty. Seeding 197 AKE numbers and 60 PMC numbers...');
+    if (hasOldFormat) {
+      console.log('[SEED] Detected old ULD format (e.g. AKE00...UB). Migrating database to AKE-1001 / PMC-10001 format...');
+      await db.delete(uldHistory);
+      await db.delete(ulds);
+    }
 
-    // Generate 197 AKE numbers: AKE10001UB to AKE10197UB
+    console.log('[SEED] Seeding 174 AKE units (AKE-1001 to AKE-1174) and 55 PMC units (PMC-10001 to PMC-10055)...');
+
+    // Generate 174 AKE numbers: AKE-1001 to AKE-1174
     const akeUlds = [];
-    for (let i = 1; i <= 197; i++) {
-      const paddedNum = String(i).padStart(5, '0');
+    for (let i = 1001; i <= 1174; i++) {
       akeUlds.push({
-        number: `AKE${paddedNum}UB`,
+        number: `AKE-${i}`,
         type: 'AKE' as const,
         currentStation: 'DAC',
         status: 'ACTIVE' as const,
       });
     }
 
-    // Generate 60 PMC numbers: PMC20001UB to PMC20060UB
+    // Generate 55 PMC numbers: PMC-10001 to PMC-10055
     const pmcUlds = [];
-    for (let i = 1; i <= 60; i++) {
-      const paddedNum = String(i).padStart(5, '0');
+    for (let i = 10001; i <= 10055; i++) {
       pmcUlds.push({
-        number: `PMC${paddedNum}UB`,
+        number: `PMC-${i}`,
         type: 'PMC' as const,
         currentStation: 'DAC',
         status: 'ACTIVE' as const,
@@ -711,7 +717,7 @@ export async function seedUldsIfEmpty() {
       await db.insert(ulds).values(batch);
     }
 
-    console.log(`[SEED] Successfully seeded ${allSeeds.length} ULDs (197 AKE & 60 PMC) into database!`);
+    console.log(`[SEED] Successfully seeded ${allSeeds.length} ULDs (174 AKE & 55 PMC) into database!`);
   } catch (error) {
     console.error('[SEED] Auto-seeding failed:', error);
   }

@@ -429,6 +429,20 @@ async function startServer() {
     }
   });
 
+  app.post('/api/ulds/reseed', requireAuth, async (req: any, res) => {
+    try {
+      if (req.user?.dbRole !== 'admin') {
+        return res.status(403).json({ error: 'Only admins can trigger database re-seeding.' });
+      }
+      await seedUldsIfEmpty();
+      broadcastRealtimeUpdate('ulds_changed');
+      const updatedList = await getUlds();
+      res.json({ message: 'Database ULD stock re-seeded successfully', count: updatedList.length });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   app.post('/api/ulds', requireAuth, async (req: any, res) => {
     try {
       const { number, type, currentStation, status } = req.body;

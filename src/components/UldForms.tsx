@@ -512,23 +512,36 @@ export default function UldForms({ currentForm, ulds, onClose, onSuccess, token,
                             </tr>
                           ) : (
                             dhakaStockFiltered.filter(u => u.type === 'AKE').map((uld, i) => (
-                              <tr key={uld.id} className="hover:bg-slate-900/50">
+                              <tr
+                                key={uld.id}
+                                onClick={() => {
+                                  if (selectedSendIds.includes(uld.id)) {
+                                    setSelectedSendIds(selectedSendIds.filter(id => id !== uld.id));
+                                  } else {
+                                    setSelectedSendIds([...selectedSendIds, uld.id]);
+                                  }
+                                }}
+                                className={`hover:bg-amber-950/20 transition-colors cursor-pointer ${
+                                  selectedSendIds.includes(uld.id) ? 'bg-amber-950/30' : ''
+                                }`}
+                              >
                                 <td className="py-2">
                                   <input
                                     type="checkbox"
                                     checked={selectedSendIds.includes(uld.id)}
                                     onChange={(e) => {
+                                      e.stopPropagation();
                                       if (e.target.checked) {
                                         setSelectedSendIds([...selectedSendIds, uld.id]);
                                       } else {
                                         setSelectedSendIds(selectedSendIds.filter(id => id !== uld.id));
                                       }
                                     }}
-                                    className="rounded text-sky-500 h-4 w-4 bg-slate-900 border-slate-750 focus:ring-sky-500 cursor-pointer"
+                                    className="rounded text-yellow-500 h-4 w-4 bg-slate-900 border-slate-750 focus:ring-yellow-500 cursor-pointer"
                                   />
                                 </td>
                                 <td className="py-2 text-slate-500">{i + 1}</td>
-                                <td className="py-2 font-bold text-slate-300">{uld.number}</td>
+                                <td className="py-2 font-extrabold text-yellow-400 font-mono tracking-wider">{uld.number}</td>
                               </tr>
                             ))
                           )}
@@ -561,23 +574,36 @@ export default function UldForms({ currentForm, ulds, onClose, onSuccess, token,
                             </tr>
                           ) : (
                             dhakaStockFiltered.filter(u => u.type === 'PMC').map((uld, i) => (
-                              <tr key={uld.id} className="hover:bg-slate-900/50">
+                              <tr
+                                key={uld.id}
+                                onClick={() => {
+                                  if (selectedSendIds.includes(uld.id)) {
+                                    setSelectedSendIds(selectedSendIds.filter(id => id !== uld.id));
+                                  } else {
+                                    setSelectedSendIds([...selectedSendIds, uld.id]);
+                                  }
+                                }}
+                                className={`hover:bg-amber-950/20 transition-colors cursor-pointer ${
+                                  selectedSendIds.includes(uld.id) ? 'bg-amber-950/30' : ''
+                                }`}
+                              >
                                 <td className="py-2">
                                   <input
                                     type="checkbox"
                                     checked={selectedSendIds.includes(uld.id)}
                                     onChange={(e) => {
+                                      e.stopPropagation();
                                       if (e.target.checked) {
                                         setSelectedSendIds([...selectedSendIds, uld.id]);
                                       } else {
                                         setSelectedSendIds(selectedSendIds.filter(id => id !== uld.id));
                                       }
                                     }}
-                                    className="rounded text-sky-500 h-4 w-4 bg-slate-900 border-slate-750 focus:ring-sky-500 cursor-pointer"
+                                    className="rounded text-yellow-500 h-4 w-4 bg-slate-900 border-slate-750 focus:ring-yellow-500 cursor-pointer"
                                   />
                                 </td>
                                 <td className="py-2 text-slate-500">{i + 1}</td>
-                                <td className="py-2 font-bold text-slate-300">{uld.number}</td>
+                                <td className="py-2 font-extrabold text-yellow-400 font-mono tracking-wider">{uld.number}</td>
                               </tr>
                             ))
                           )}
@@ -701,23 +727,36 @@ export default function UldForms({ currentForm, ulds, onClose, onSuccess, token,
                               </tr>
                             ) : (
                               uldsAtOrigin.filter(u => u.type === 'AKE').map((uld, i) => (
-                                <tr key={uld.id} className="hover:bg-slate-900/50">
+                                <tr
+                                  key={uld.id}
+                                  onClick={() => {
+                                    if (selectedReceiveIds.includes(uld.id)) {
+                                      setSelectedReceiveIds(selectedReceiveIds.filter(id => id !== uld.id));
+                                    } else {
+                                      setSelectedReceiveIds([...selectedReceiveIds, uld.id]);
+                                    }
+                                  }}
+                                  className={`hover:bg-amber-950/20 transition-colors cursor-pointer ${
+                                    selectedReceiveIds.includes(uld.id) ? 'bg-amber-950/30' : ''
+                                  }`}
+                                >
                                   <td className="py-2">
                                     <input
                                       type="checkbox"
                                       checked={selectedReceiveIds.includes(uld.id)}
                                       onChange={(e) => {
+                                        e.stopPropagation();
                                         if (e.target.checked) {
                                           setSelectedReceiveIds([...selectedReceiveIds, uld.id]);
                                         } else {
                                           setSelectedReceiveIds(selectedReceiveIds.filter(id => id !== uld.id));
                                         }
                                       }}
-                                      className="rounded text-sky-500 h-4 w-4 bg-slate-900 border-slate-750 focus:ring-sky-500 cursor-pointer"
+                                      className="rounded text-yellow-500 h-4 w-4 bg-slate-900 border-slate-750 focus:ring-yellow-500 cursor-pointer"
                                     />
                                   </td>
                                   <td className="py-2 text-slate-500">{i + 1}</td>
-                                  <td className="py-2 font-bold text-slate-300">{uld.number}</td>
+                                  <td className="py-2 font-extrabold text-yellow-400 font-mono tracking-wider">{uld.number}</td>
                                 </tr>
                               ))
                             )}
@@ -748,23 +787,36 @@ export default function UldForms({ currentForm, ulds, onClose, onSuccess, token,
                               </tr>
                             ) : (
                               uldsAtOrigin.filter(u => u.type === 'PMC').map((uld, i) => (
-                                <tr key={uld.id} className="hover:bg-slate-900/50">
+                                <tr
+                                  key={uld.id}
+                                  onClick={() => {
+                                    if (selectedReceiveIds.includes(uld.id)) {
+                                      setSelectedReceiveIds(selectedReceiveIds.filter(id => id !== uld.id));
+                                    } else {
+                                      setSelectedReceiveIds([...selectedReceiveIds, uld.id]);
+                                    }
+                                  }}
+                                  className={`hover:bg-amber-950/20 transition-colors cursor-pointer ${
+                                    selectedReceiveIds.includes(uld.id) ? 'bg-amber-950/30' : ''
+                                  }`}
+                                >
                                   <td className="py-2">
                                     <input
                                       type="checkbox"
                                       checked={selectedReceiveIds.includes(uld.id)}
                                       onChange={(e) => {
+                                        e.stopPropagation();
                                         if (e.target.checked) {
                                           setSelectedReceiveIds([...selectedReceiveIds, uld.id]);
                                         } else {
                                           setSelectedReceiveIds(selectedReceiveIds.filter(id => id !== uld.id));
                                         }
                                       }}
-                                      className="rounded text-sky-500 h-4 w-4 bg-slate-900 border-slate-750 focus:ring-sky-500 cursor-pointer"
+                                      className="rounded text-yellow-500 h-4 w-4 bg-slate-900 border-slate-750 focus:ring-yellow-500 cursor-pointer"
                                     />
                                   </td>
                                   <td className="py-2 text-slate-500">{i + 1}</td>
-                                  <td className="py-2 font-bold text-slate-300">{uld.number}</td>
+                                  <td className="py-2 font-extrabold text-yellow-400 font-mono tracking-wider">{uld.number}</td>
                                 </tr>
                               ))
                             )}
@@ -891,12 +943,25 @@ export default function UldForms({ currentForm, ulds, onClose, onSuccess, token,
                           </tr>
                         ) : (
                           uldsForRemove.filter(u => u.type === 'AKE').map((uld, i) => (
-                            <tr key={uld.id} className="hover:bg-slate-900/50">
+                            <tr
+                              key={uld.id}
+                              onClick={() => {
+                                if (selectedRemoveIds.includes(uld.id)) {
+                                  setSelectedRemoveIds(selectedRemoveIds.filter(id => id !== uld.id));
+                                } else {
+                                  setSelectedRemoveIds([...selectedRemoveIds, uld.id]);
+                                }
+                              }}
+                              className={`hover:bg-amber-950/20 transition-colors cursor-pointer ${
+                                selectedRemoveIds.includes(uld.id) ? 'bg-amber-950/30' : ''
+                              }`}
+                            >
                               <td className="py-2">
                                 <input
                                   type="checkbox"
                                   checked={selectedRemoveIds.includes(uld.id)}
                                   onChange={(e) => {
+                                    e.stopPropagation();
                                     if (e.target.checked) {
                                       setSelectedRemoveIds([...selectedRemoveIds, uld.id]);
                                     } else {
@@ -907,7 +972,7 @@ export default function UldForms({ currentForm, ulds, onClose, onSuccess, token,
                                 />
                               </td>
                               <td className="py-2 text-slate-500 text-xs">{i + 1}</td>
-                              <td className="py-2 font-bold text-slate-200">{uld.number}</td>
+                              <td className="py-2 font-extrabold text-yellow-400 font-mono tracking-wider">{uld.number}</td>
                               <td className="py-2 text-right text-xs text-sky-400">{uld.currentStation}</td>
                             </tr>
                           ))
@@ -961,12 +1026,25 @@ export default function UldForms({ currentForm, ulds, onClose, onSuccess, token,
                           </tr>
                         ) : (
                           uldsForRemove.filter(u => u.type === 'PMC').map((uld, i) => (
-                            <tr key={uld.id} className="hover:bg-slate-900/50">
+                            <tr
+                              key={uld.id}
+                              onClick={() => {
+                                if (selectedRemoveIds.includes(uld.id)) {
+                                  setSelectedRemoveIds(selectedRemoveIds.filter(id => id !== uld.id));
+                                } else {
+                                  setSelectedRemoveIds([...selectedRemoveIds, uld.id]);
+                                }
+                              }}
+                              className={`hover:bg-amber-950/20 transition-colors cursor-pointer ${
+                                selectedRemoveIds.includes(uld.id) ? 'bg-amber-950/30' : ''
+                              }`}
+                            >
                               <td className="py-2">
                                 <input
                                   type="checkbox"
                                   checked={selectedRemoveIds.includes(uld.id)}
                                   onChange={(e) => {
+                                    e.stopPropagation();
                                     if (e.target.checked) {
                                       setSelectedRemoveIds([...selectedRemoveIds, uld.id]);
                                     } else {
@@ -977,7 +1055,7 @@ export default function UldForms({ currentForm, ulds, onClose, onSuccess, token,
                                 />
                               </td>
                               <td className="py-2 text-slate-500 text-xs">{i + 1}</td>
-                              <td className="py-2 font-bold text-slate-200">{uld.number}</td>
+                              <td className="py-2 font-extrabold text-yellow-400 font-mono tracking-wider">{uld.number}</td>
                               <td className="py-2 text-right text-xs text-sky-400">{uld.currentStation}</td>
                             </tr>
                           ))
