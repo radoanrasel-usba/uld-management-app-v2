@@ -1,0 +1,8 @@
+{
+  "name": "Remix: Aviation ULD Management",
+  "description": "A highly responsive, cloud-synchronized Aviation ULD Management application for US Bangla Airlines. Track containers and pallets across multiple station stock depots with secure role-based Google OAuth, database backups, audit activity logs, and real-time security alerts.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
