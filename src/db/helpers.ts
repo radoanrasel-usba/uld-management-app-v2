@@ -596,6 +596,66 @@ export async function importDatabaseData(parsed: any, email: string) {
   }
 }
 
+export async function ensureTablesExist() {
+  try {
+    await db.execute(sql`
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        uid TEXT NOT NULL UNIQUE,
+        email TEXT NOT NULL UNIQUE,
+        password TEXT,
+        role TEXT NOT NULL DEFAULT 'visitor',
+        status TEXT NOT NULL DEFAULT 'pending',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS ulds (
+        id SERIAL PRIMARY KEY,
+        number TEXT NOT NULL UNIQUE,
+        type TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'ACTIVE',
+        current_station TEXT NOT NULL DEFAULT 'DAC',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS uld_history (
+        id SERIAL PRIMARY KEY,
+        uld_id INTEGER REFERENCES ulds(id) ON DELETE CASCADE,
+        uld_number TEXT NOT NULL,
+        action TEXT NOT NULL,
+        origin_station TEXT,
+        destination_station TEXT,
+        performed_by TEXT NOT NULL,
+        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        remarks TEXT
+      );
+
+      CREATE TABLE IF NOT EXISTS user_logs (
+        id SERIAL PRIMARY KEY,
+        user_email TEXT NOT NULL,
+        action TEXT NOT NULL,
+        status TEXT NOT NULL,
+        ip_address TEXT,
+        details TEXT,
+        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS backups (
+        id SERIAL PRIMARY KEY,
+        name TEXT NOT NULL,
+        description TEXT,
+        data TEXT NOT NULL,
+        created_by TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+      );
+    `);
+    console.log('[DB] Database tables initialized successfully.');
+  } catch (error) {
+    console.error('[DB] Failed to ensure tables exist:', error);
+  }
+}
+
 export async function seedUldsIfEmpty() {
   try {
     const existing = await db.select().from(ulds).limit(1);

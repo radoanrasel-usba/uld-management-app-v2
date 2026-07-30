@@ -24,6 +24,7 @@ import {
   updateUserRole,
   updateUserStatus,
   deleteUserByUid,
+  ensureTablesExist,
   seedUldsIfEmpty,
   exportDatabaseData,
   importDatabaseData
@@ -695,7 +696,8 @@ async function startServer() {
     });
   }
 
-  // Auto-seed pre-determined AKE and PMC numbers if empty
+  // Ensure all database tables exist and auto-seed pre-determined AKE and PMC numbers if empty
+  await ensureTablesExist();
   await seedUldsIfEmpty();
 
   app.listen(PORT, '0.0.0.0', () => {
