@@ -215,6 +215,16 @@ async function startServer() {
         message: 'PLEASE WAIT UNTIL RADOAN ACCEPT YOUR REQUEST',
       });
     } catch (error: any) {
+      console.error('[REGISTER DB ERROR]', error);
+      const isDbConnError = error.message?.includes('ENETUNREACH') || 
+                            error.message?.includes('ECONNREFUSED') || 
+                            error.message?.includes('ETIMEDOUT') ||
+                            error.message?.includes('Failed query');
+      if (isDbConnError) {
+        return res.status(530).json({
+          error: 'Database connection failed on Render server (ENETUNREACH IPv6 error). Please update Render DATABASE_URL to use Supabase IPv4 Session Pooler (port 6543).'
+        });
+      }
       res.status(500).json({ error: error.message });
     }
   });
@@ -315,6 +325,16 @@ async function startServer() {
         }
       });
     } catch (error: any) {
+      console.error('[LOGIN DB ERROR]', error);
+      const isDbConnError = error.message?.includes('ENETUNREACH') || 
+                            error.message?.includes('ECONNREFUSED') || 
+                            error.message?.includes('ETIMEDOUT') ||
+                            error.message?.includes('Failed query');
+      if (isDbConnError) {
+        return res.status(530).json({
+          error: 'Database connection failed on Render server (ENETUNREACH IPv6 error). Please update Render DATABASE_URL to use Supabase IPv4 Session Pooler (port 6543).'
+        });
+      }
       res.status(500).json({ error: error.message });
     }
   });
