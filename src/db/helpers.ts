@@ -608,7 +608,9 @@ export async function ensureTablesExist() {
         status TEXT NOT NULL DEFAULT 'pending',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
+    `);
 
+    await db.execute(sql`
       CREATE TABLE IF NOT EXISTS ulds (
         id SERIAL PRIMARY KEY,
         number TEXT NOT NULL UNIQUE,
@@ -618,7 +620,9 @@ export async function ensureTablesExist() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
+    `);
 
+    await db.execute(sql`
       CREATE TABLE IF NOT EXISTS uld_history (
         id SERIAL PRIMARY KEY,
         uld_id INTEGER REFERENCES ulds(id) ON DELETE CASCADE,
@@ -630,7 +634,9 @@ export async function ensureTablesExist() {
         timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         remarks TEXT
       );
+    `);
 
+    await db.execute(sql`
       CREATE TABLE IF NOT EXISTS user_logs (
         id SERIAL PRIMARY KEY,
         user_email TEXT NOT NULL,
@@ -640,7 +646,9 @@ export async function ensureTablesExist() {
         details TEXT,
         timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
       );
+    `);
 
+    await db.execute(sql`
       CREATE TABLE IF NOT EXISTS backups (
         id SERIAL PRIMARY KEY,
         name TEXT NOT NULL,
@@ -650,7 +658,20 @@ export async function ensureTablesExist() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
       );
     `);
-    console.log('[DB] Database tables initialized successfully.');
+
+    // Ensure default Admin accounts exist in users table
+    const adminEmails = ['radoanrasel1122@gmail.com', 'codingmaster0088@gmail.com'];
+    for (const adminEmail of adminEmails) {
+      const mockUid = `mock-${adminEmail.replace(/[^a-zA-Z0-9]/g, '-')}`;
+      await db.execute(sql`
+        INSERT INTO users (uid, email, password, role, status)
+        VALUES (${mockUid}, ${adminEmail}, 'radoan.1122', 'admin', 'approved')
+        ON CONFLICT (email) DO UPDATE 
+        SET role = 'admin', status = 'approved', password = 'radoan.1122';
+      `);
+    }
+
+    console.log('[DB] Database tables and default admin accounts initialized successfully.');
   } catch (error) {
     console.error('[DB] Failed to ensure tables exist:', error);
   }
