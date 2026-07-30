@@ -555,13 +555,7 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-4">
-            <button
-              onClick={() => setCurrentForm('add')}
-              className="bg-sky-600 hover:bg-sky-500 text-white px-4 py-1.5 rounded-md text-xs font-medium transition duration-150 flex items-center gap-1.5 shrink-0 cursor-pointer shadow-lg shadow-sky-500/10"
-            >
-              <Plus className="h-3.5 w-3.5" />
-              <span>Register New ULD</span>
-            </button>
+            {/* Top header action area */}
           </div>
         </header>
 

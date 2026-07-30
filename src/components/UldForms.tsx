@@ -521,8 +521,10 @@ export default function UldForms({ currentForm, ulds, onClose, onSuccess, token,
                                     setSelectedSendIds([...selectedSendIds, uld.id]);
                                   }
                                 }}
-                                className={`hover:bg-amber-950/20 transition-colors cursor-pointer ${
-                                  selectedSendIds.includes(uld.id) ? 'bg-amber-950/30' : ''
+                                className={`transition-all duration-150 cursor-pointer ${
+                                  selectedSendIds.includes(uld.id)
+                                    ? 'bg-[#29170e] border-l-2 border-amber-500 font-bold'
+                                    : 'hover:bg-slate-900/60'
                                 }`}
                               >
                                 <td className="py-2">
@@ -583,8 +585,10 @@ export default function UldForms({ currentForm, ulds, onClose, onSuccess, token,
                                     setSelectedSendIds([...selectedSendIds, uld.id]);
                                   }
                                 }}
-                                className={`hover:bg-amber-950/20 transition-colors cursor-pointer ${
-                                  selectedSendIds.includes(uld.id) ? 'bg-amber-950/30' : ''
+                                className={`transition-all duration-150 cursor-pointer ${
+                                  selectedSendIds.includes(uld.id)
+                                    ? 'bg-[#29170e] border-l-2 border-amber-500 font-bold'
+                                    : 'hover:bg-slate-900/60'
                                 }`}
                               >
                                 <td className="py-2">
@@ -736,8 +740,10 @@ export default function UldForms({ currentForm, ulds, onClose, onSuccess, token,
                                       setSelectedReceiveIds([...selectedReceiveIds, uld.id]);
                                     }
                                   }}
-                                  className={`hover:bg-amber-950/20 transition-colors cursor-pointer ${
-                                    selectedReceiveIds.includes(uld.id) ? 'bg-amber-950/30' : ''
+                                  className={`transition-all duration-150 cursor-pointer ${
+                                    selectedReceiveIds.includes(uld.id)
+                                      ? 'bg-[#29170e] border-l-2 border-amber-500 font-bold'
+                                      : 'hover:bg-slate-900/60'
                                   }`}
                                 >
                                   <td className="py-2">
@@ -796,8 +802,10 @@ export default function UldForms({ currentForm, ulds, onClose, onSuccess, token,
                                       setSelectedReceiveIds([...selectedReceiveIds, uld.id]);
                                     }
                                   }}
-                                  className={`hover:bg-amber-950/20 transition-colors cursor-pointer ${
-                                    selectedReceiveIds.includes(uld.id) ? 'bg-amber-950/30' : ''
+                                  className={`transition-all duration-150 cursor-pointer ${
+                                    selectedReceiveIds.includes(uld.id)
+                                      ? 'bg-[#29170e] border-l-2 border-amber-500 font-bold'
+                                      : 'hover:bg-slate-900/60'
                                   }`}
                                 >
                                   <td className="py-2">
@@ -952,8 +960,10 @@ export default function UldForms({ currentForm, ulds, onClose, onSuccess, token,
                                   setSelectedRemoveIds([...selectedRemoveIds, uld.id]);
                                 }
                               }}
-                              className={`hover:bg-amber-950/20 transition-colors cursor-pointer ${
-                                selectedRemoveIds.includes(uld.id) ? 'bg-amber-950/30' : ''
+                              className={`transition-all duration-150 cursor-pointer ${
+                                selectedRemoveIds.includes(uld.id)
+                                  ? 'bg-[#29170e] border-l-2 border-amber-500 font-bold'
+                                  : 'hover:bg-slate-900/60'
                               }`}
                             >
                               <td className="py-2">
@@ -1035,8 +1045,10 @@ export default function UldForms({ currentForm, ulds, onClose, onSuccess, token,
                                   setSelectedRemoveIds([...selectedRemoveIds, uld.id]);
                                 }
                               }}
-                              className={`hover:bg-amber-950/20 transition-colors cursor-pointer ${
-                                selectedRemoveIds.includes(uld.id) ? 'bg-amber-950/30' : ''
+                              className={`transition-all duration-150 cursor-pointer ${
+                                selectedRemoveIds.includes(uld.id)
+                                  ? 'bg-[#29170e] border-l-2 border-amber-500 font-bold'
+                                  : 'hover:bg-slate-900/60'
                               }`}
                             >
                               <td className="py-2">
