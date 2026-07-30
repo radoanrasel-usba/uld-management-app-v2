@@ -129,6 +129,17 @@ async function startServer() {
     broadcastRealtimeUpdate('alerts_changed', alert);
   };
 
+  // Helper to query user by email with schema auto-healing
+  const findUserByEmailSafely = async (emailStr: string) => {
+    try {
+      return await db.select().from(users).where(eq(users.email, emailStr));
+    } catch (err) {
+      console.warn('[DB] Table query failed, auto-healing schema...', err);
+      await ensureTablesExist();
+      return await db.select().from(users).where(eq(users.email, emailStr));
+    }
+  };
+
   // ---------------------------------------------------------------------------
   // AUTH REGISTER & LOGIN ENDPOINTS
   // ---------------------------------------------------------------------------
@@ -148,8 +159,8 @@ async function startServer() {
       const isSpecialAdmin = email === 'codingmaster0088@gmail.com' || email === 'radoanrasel1122@gmail.com';
       const mockUid = `mock-${email.replace(/[^a-zA-Z0-9]/g, '-')}`;
 
-      // Check if user exists
-      const existing = await db.select().from(users).where(eq(users.email, email));
+      // Check if user exists safely
+      const existing = await findUserByEmailSafely(email);
 
       if (existing.length > 0) {
         const existingUser = existing[0];
@@ -222,7 +233,7 @@ async function startServer() {
       if (isSpecialAdmin) {
         if (password === 'radoan.1122') {
           let adminUser;
-          const existing = await db.select().from(users).where(eq(users.email, email));
+          const existing = await findUserByEmailSafely(email);
           if (existing.length > 0) {
             adminUser = existing[0];
             if (adminUser.role !== 'admin' || adminUser.status !== 'approved') {
@@ -253,7 +264,7 @@ async function startServer() {
       }
 
       // Check non-admin user
-      const existing = await db.select().from(users).where(eq(users.email, email));
+      const existing = await findUserByEmailSafely(email);
       if (existing.length === 0) {
         return res.status(404).json({ error: 'User account not found. Please click REGISTER to create your account.' });
       }

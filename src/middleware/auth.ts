@@ -45,7 +45,15 @@ export const requireAuth = async (
     const mockUid = `mock-${email.replace(/[^a-zA-Z0-9]/g, '-')}`;
 
     let dbUser;
-    const existingByEmail = await db.select().from(users).where(eq(users.email, email));
+    let existingByEmail;
+    try {
+      existingByEmail = await db.select().from(users).where(eq(users.email, email));
+    } catch (dbErr) {
+      // Table might not exist yet, auto-heal schema and retry
+      const { ensureTablesExist } = await import('../db/helpers');
+      await ensureTablesExist();
+      existingByEmail = await db.select().from(users).where(eq(users.email, email));
+    }
     
     if (existingByEmail.length > 0) {
       dbUser = existingByEmail[0];
