@@ -273,8 +273,8 @@ export default function UldForms({ currentForm, ulds, onClose, onSuccess, token,
   );
 
   return (
-    <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-      <div className="w-full max-w-4xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-6 md:p-8 my-8 relative">
+    <div className="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 overflow-y-auto p-2 sm:p-4 md:p-6 flex justify-center items-start sm:items-center">
+      <div className="w-full max-w-4xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 my-2 sm:my-8 relative max-h-[95vh] overflow-y-auto">
         
         {/* Error display */}
         {error && (
@@ -505,13 +505,13 @@ export default function UldForms({ currentForm, ulds, onClose, onSuccess, token,
                       </span>
                     </div>
                     
-                    <div className="max-h-96 overflow-y-auto space-y-1">
+                    <div className="max-h-64 sm:max-h-80 md:max-h-96 overflow-y-auto space-y-1">
                       <table className="w-full text-left font-mono text-sm">
-                        <thead>
-                          <tr className="text-slate-500 border-b border-slate-800 text-xs">
-                            <th className="pb-1 w-8">MARK</th>
-                            <th className="pb-1 w-8">S/L</th>
-                            <th className="pb-1">AKE NO</th>
+                        <thead className="sticky top-0 bg-slate-950 z-10">
+                          <tr className="text-slate-400 border-b border-slate-800 text-xs">
+                            <th className="pb-1.5 pt-1 w-8 bg-slate-950">MARK</th>
+                            <th className="pb-1.5 pt-1 w-8 bg-slate-950">S/L</th>
+                            <th className="pb-1.5 pt-1 bg-slate-950">AKE NO</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -569,13 +569,13 @@ export default function UldForms({ currentForm, ulds, onClose, onSuccess, token,
                       </span>
                     </div>
                     
-                    <div className="max-h-96 overflow-y-auto space-y-1">
+                    <div className="max-h-64 sm:max-h-80 md:max-h-96 overflow-y-auto space-y-1">
                       <table className="w-full text-left font-mono text-sm">
-                        <thead>
-                          <tr className="text-slate-500 border-b border-slate-800 text-xs">
-                            <th className="pb-1 w-8">MARK</th>
-                            <th className="pb-1 w-8">S/L</th>
-                            <th className="pb-1">PMC NO</th>
+                        <thead className="sticky top-0 bg-slate-950 z-10">
+                          <tr className="text-slate-400 border-b border-slate-800 text-xs">
+                            <th className="pb-1.5 pt-1 w-8 bg-slate-950">MARK</th>
+                            <th className="pb-1.5 pt-1 w-8 bg-slate-950">S/L</th>
+                            <th className="pb-1.5 pt-1 bg-slate-950">PMC NO</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -732,13 +732,13 @@ export default function UldForms({ currentForm, ulds, onClose, onSuccess, token,
                         <span className="font-bold text-white text-sm font-mono">AKE SELECTED: {selectedReceiveIds.filter(id => ulds.find(u => u.id === id)?.type === 'AKE').length}</span>
                       </div>
                       
-                      <div className="max-h-96 overflow-y-auto space-y-1">
+                      <div className="max-h-64 sm:max-h-80 md:max-h-96 overflow-y-auto space-y-1">
                         <table className="w-full text-left font-mono text-sm">
-                          <thead>
-                            <tr className="text-slate-500 border-b border-slate-800 text-xs">
-                              <th className="pb-1 w-8">MARK</th>
-                              <th className="pb-1 w-8">S/L</th>
-                              <th className="pb-1">AKE NO</th>
+                          <thead className="sticky top-0 bg-slate-950 z-10">
+                            <tr className="text-slate-400 border-b border-slate-800 text-xs">
+                              <th className="pb-1.5 pt-1 w-8 bg-slate-950">MARK</th>
+                              <th className="pb-1.5 pt-1 w-8 bg-slate-950">S/L</th>
+                              <th className="pb-1.5 pt-1 bg-slate-950">AKE NO</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -794,13 +794,13 @@ export default function UldForms({ currentForm, ulds, onClose, onSuccess, token,
                         <span className="font-bold text-white text-sm font-mono">PMC SELECTED: {selectedReceiveIds.filter(id => ulds.find(u => u.id === id)?.type === 'PMC').length}</span>
                       </div>
                       
-                      <div className="max-h-96 overflow-y-auto space-y-1">
+                      <div className="max-h-64 sm:max-h-80 md:max-h-96 overflow-y-auto space-y-1">
                         <table className="w-full text-left font-mono text-sm">
-                          <thead>
-                            <tr className="text-slate-500 border-b border-slate-800 text-xs">
-                              <th className="pb-1 w-8">MARK</th>
-                              <th className="pb-1 w-8">S/L</th>
-                              <th className="pb-1">PMC NO</th>
+                          <thead className="sticky top-0 bg-slate-950 z-10">
+                            <tr className="text-slate-400 border-b border-slate-800 text-xs">
+                              <th className="pb-1.5 pt-1 w-8 bg-slate-950">MARK</th>
+                              <th className="pb-1.5 pt-1 w-8 bg-slate-950">S/L</th>
+                              <th className="pb-1.5 pt-1 bg-slate-950">PMC NO</th>
                             </tr>
                           </thead>
                           <tbody>
