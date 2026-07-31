@@ -25,6 +25,7 @@ export default function Dashboard({
   showToast
 }: DashboardProps) {
   const [checklistType, setChecklistType] = useState<'total' | 'dhaka' | 'outstation' | null>(null);
+  const [checklistSearch, setChecklistSearch] = useState<string>('');
   const [currentTime, setCurrentTime] = useState<string>('');
 
   const formatDate = (dateStr?: string) => {
@@ -410,10 +411,10 @@ export default function Dashboard({
                       const sPmc = ulds.filter(u => u.currentStation === station && u.type === 'PMC').length;
                       const sTotal = sAke + sPmc;
 
-                      // Get status based on AKE stock count per station: >=21 OPTIMAN, <21 POOR
+                      // Get status based on AKE stock count per station: >=21 GOOD, <21 POOR
                       const getStationStatus = (ake: number) => {
                         if (ake >= 21) {
-                          return { text: "OPTIMAN", color: "text-emerald-400", dot: "bg-emerald-500" };
+                          return { text: "GOOD", color: "text-emerald-400", dot: "bg-emerald-500" };
                         } else {
                           return { text: "POOR", color: "text-amber-400 font-bold", dot: "bg-amber-400 animate-pulse" };
                         }
@@ -541,7 +542,7 @@ export default function Dashboard({
           <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <div className="w-full max-w-4xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-6 relative flex flex-col max-h-[85vh]">
               
-              <div className="border-b border-slate-800 pb-3 mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="border-b border-slate-800 pb-3 mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                   <h2 className="text-base font-bold text-white uppercase font-mono tracking-wide">
                     {checklistType === 'total' && 'Total Fleet Inventory Checklist'}
@@ -552,13 +553,36 @@ export default function Dashboard({
                     Active ULD records: {modalActiveUlds.length} units across {stationsToDisplay.length} station(s)
                   </p>
                 </div>
-                <button
-                  onClick={downloadPdf}
-                  className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold font-mono text-[11px] uppercase py-2 px-4 rounded-xl transition flex items-center gap-1.5 shrink-0 shadow-lg shadow-emerald-500/10 cursor-pointer self-start sm:self-center"
-                >
-                  <Download className="h-3.5 w-3.5" />
-                  <span>Download Report (PDF)</span>
-                </button>
+
+                {/* Checklist Search Bar */}
+                <div className="flex items-center gap-3 w-full sm:w-auto">
+                  <div className="relative flex-1 sm:w-64">
+                    <input
+                      type="text"
+                      placeholder="Search serial (e.g. AKE-1001, 1005)..."
+                      value={checklistSearch}
+                      onChange={(e) => setChecklistSearch(e.target.value)}
+                      className="w-full bg-slate-950 border border-amber-500/40 rounded-xl pl-3 pr-8 py-1.5 text-xs text-yellow-300 placeholder-slate-500 font-mono focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 shadow-inner"
+                    />
+                    {checklistSearch && (
+                      <button
+                        onClick={() => setChecklistSearch('')}
+                        className="absolute right-2.5 top-1.5 text-slate-400 hover:text-white text-xs font-bold cursor-pointer"
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+
+                  <button
+                    onClick={downloadPdf}
+                    className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold font-mono text-[11px] uppercase py-2 px-3.5 rounded-xl transition flex items-center gap-1.5 shrink-0 shadow-lg shadow-emerald-500/10 cursor-pointer self-stretch sm:self-center"
+                  >
+                    <Download className="h-3.5 w-3.5" />
+                    <span className="hidden sm:inline">Download Report</span>
+                    <span className="sm:hidden">PDF</span>
+                  </button>
+                </div>
               </div>
 
               <div className="overflow-y-auto flex-1 space-y-6 pr-1.5">
@@ -568,13 +592,31 @@ export default function Dashboard({
                   </div>
                 ) : (
                   stationsToDisplay.map((station) => {
+                    const searchQ = checklistSearch.trim().toLowerCase();
+
                     const stationAkes = modalActiveUlds
                       .filter(u => u.currentStation === station && u.type === 'AKE')
-                      .sort((a, b) => a.number.localeCompare(b.number, undefined, { numeric: true, sensitivity: 'base' }));
+                      .sort((a, b) => {
+                        if (searchQ) {
+                          const matchA = a.number.toLowerCase().includes(searchQ);
+                          const matchB = b.number.toLowerCase().includes(searchQ);
+                          if (matchA && !matchB) return -1;
+                          if (!matchA && matchB) return 1;
+                        }
+                        return a.number.localeCompare(b.number, undefined, { numeric: true, sensitivity: 'base' });
+                      });
 
                     const stationPmcs = modalActiveUlds
                       .filter(u => u.currentStation === station && u.type === 'PMC')
-                      .sort((a, b) => a.number.localeCompare(b.number, undefined, { numeric: true, sensitivity: 'base' }));
+                      .sort((a, b) => {
+                        if (searchQ) {
+                          const matchA = a.number.toLowerCase().includes(searchQ);
+                          const matchB = b.number.toLowerCase().includes(searchQ);
+                          if (matchA && !matchB) return -1;
+                          if (!matchA && matchB) return 1;
+                        }
+                        return a.number.localeCompare(b.number, undefined, { numeric: true, sensitivity: 'base' });
+                      });
 
                     return (
                       <div key={station} className="bg-slate-950/60 border border-slate-800 rounded-xl p-4 space-y-3">
@@ -609,22 +651,34 @@ export default function Dashboard({
                                 {stationAkes.length === 0 ? (
                                   <tr><td colSpan={4} className="text-center py-3 text-slate-600 text-[11px]">No AKE units at {station}</td></tr>
                                 ) : (
-                                  stationAkes.map((uld, index) => (
-                                    <tr key={uld.id} className="hover:bg-slate-800/30">
-                                      <td className="py-2 text-slate-500 text-[11px]">{index + 1}</td>
-                                      <td className="py-2 font-extrabold text-sm text-white tracking-wider font-mono">{uld.number}</td>
-                                      <td className="py-2 text-slate-300 font-mono text-[11px]">{formatDate(uld.updatedAt || uld.createdAt)}</td>
-                                      <td className="py-2 text-right">
-                                        <span className={`px-2 py-0.5 rounded text-[9px] font-bold ${
-                                          uld.status === 'ACTIVE'
-                                            ? 'bg-emerald-950 text-emerald-400 border border-emerald-900/40'
-                                            : 'bg-red-950 text-red-400 border border-red-900/40'
-                                        }`}>
-                                          {uld.status}
-                                        </span>
-                                      </td>
-                                    </tr>
-                                  ))
+                                  stationAkes.map((uld, index) => {
+                                    const isSearchMatch = searchQ !== '' && uld.number.toLowerCase().includes(searchQ);
+                                    return (
+                                      <tr
+                                        key={uld.id}
+                                        className={`transition-colors ${
+                                          isSearchMatch
+                                            ? 'bg-amber-950/60 border-l-4 border-amber-400 font-extrabold text-yellow-300'
+                                            : 'hover:bg-slate-800/30'
+                                        }`}
+                                      >
+                                        <td className="py-2 text-slate-500 text-[11px] px-1">{index + 1}</td>
+                                        <td className={`py-2 font-extrabold text-sm tracking-wider font-mono ${isSearchMatch ? 'text-yellow-300 font-black' : 'text-white'}`}>
+                                          {uld.number}
+                                        </td>
+                                        <td className="py-2 text-slate-300 font-mono text-[11px]">{formatDate(uld.updatedAt || uld.createdAt)}</td>
+                                        <td className="py-2 text-right px-1">
+                                          <span className={`px-2 py-0.5 rounded text-[9px] font-bold ${
+                                            uld.status === 'ACTIVE'
+                                              ? 'bg-emerald-950 text-emerald-400 border border-emerald-900/40'
+                                              : 'bg-red-950 text-red-400 border border-red-900/40'
+                                          }`}>
+                                            {uld.status}
+                                          </span>
+                                        </td>
+                                      </tr>
+                                    );
+                                  })
                                 )}
                               </tbody>
                             </table>
@@ -649,22 +703,34 @@ export default function Dashboard({
                                 {stationPmcs.length === 0 ? (
                                   <tr><td colSpan={4} className="text-center py-3 text-slate-600 text-[11px]">No PMC units at {station}</td></tr>
                                 ) : (
-                                  stationPmcs.map((uld, index) => (
-                                    <tr key={uld.id} className="hover:bg-slate-850/30">
-                                      <td className="py-2 text-slate-500 text-[11px]">{index + 1}</td>
-                                      <td className="py-2 font-extrabold text-sm text-white tracking-wider font-mono">{uld.number}</td>
-                                      <td className="py-2 text-slate-300 font-mono text-[11px]">{formatDate(uld.updatedAt || uld.createdAt)}</td>
-                                      <td className="py-2 text-right">
-                                        <span className={`px-2 py-0.5 rounded text-[9px] font-bold ${
-                                          uld.status === 'ACTIVE'
-                                            ? 'bg-emerald-950 text-emerald-400 border border-emerald-900/40'
-                                            : 'bg-red-950 text-red-400 border border-red-900/40'
-                                        }`}>
-                                          {uld.status}
-                                        </span>
-                                      </td>
-                                    </tr>
-                                  ))
+                                  stationPmcs.map((uld, index) => {
+                                    const isSearchMatch = searchQ !== '' && uld.number.toLowerCase().includes(searchQ);
+                                    return (
+                                      <tr
+                                        key={uld.id}
+                                        className={`transition-colors ${
+                                          isSearchMatch
+                                            ? 'bg-amber-950/60 border-l-4 border-amber-400 font-extrabold text-yellow-300'
+                                            : 'hover:bg-slate-800/30'
+                                        }`}
+                                      >
+                                        <td className="py-2 text-slate-500 text-[11px] px-1">{index + 1}</td>
+                                        <td className={`py-2 font-extrabold text-sm tracking-wider font-mono ${isSearchMatch ? 'text-yellow-300 font-black' : 'text-white'}`}>
+                                          {uld.number}
+                                        </td>
+                                        <td className="py-2 text-slate-300 font-mono text-[11px]">{formatDate(uld.updatedAt || uld.createdAt)}</td>
+                                        <td className="py-2 text-right px-1">
+                                          <span className={`px-2 py-0.5 rounded text-[9px] font-bold ${
+                                            uld.status === 'ACTIVE'
+                                              ? 'bg-emerald-950 text-emerald-400 border border-emerald-900/40'
+                                              : 'bg-red-950 text-red-400 border border-red-900/40'
+                                          }`}>
+                                            {uld.status}
+                                          </span>
+                                        </td>
+                                      </tr>
+                                    );
+                                  })
                                 )}
                               </tbody>
                             </table>

@@ -440,28 +440,36 @@ export default function UldForms({ currentForm, ulds, onClose, onSuccess, token,
 
         {/* 3. SEND ULD FORM */}
         {currentForm === 'send' && (
-          <form onSubmit={handleSend} className="space-y-6">
-            <div className="border-b border-slate-800 pb-4">
+          <form onSubmit={handleSend} className="space-y-6 pt-2">
+            <div className="border-b border-slate-800 pb-3">
               <h2 className="text-lg font-bold font-mono text-white tracking-wide flex items-center gap-2">
-                <PlaneTakeoff className="h-5 w-5 text-sky-500" />
+                <PlaneTakeoff className="h-5 w-5 text-sky-400" />
                 SEND ULD FROM DAC STOCK
               </h2>
               <p className="text-xs text-slate-400 font-mono mt-1">DISPATCH TO OUTSTATION HUB</p>
             </div>
 
-            <div className="space-y-4">
+            {/* PROMINENT STATION SELECTION & SEARCH BOX */}
+            <div className="bg-slate-950/90 border-2 border-amber-500/60 rounded-2xl p-4 md:p-5 shadow-xl shadow-amber-950/20 my-4 space-y-4">
+              <div className="flex items-center gap-2 text-amber-400 font-mono text-xs font-bold uppercase tracking-wide">
+                <span className="bg-amber-500 text-slate-950 px-2 py-0.5 rounded font-black text-[11px]">STEP 1</span>
+                <span>SELECT TARGET DESTINATION & SEARCH</span>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-mono uppercase text-slate-400 mb-2">Select Target Destination</label>
+                  <label className="block text-xs font-mono uppercase text-yellow-400 font-bold mb-1.5">
+                    Destination Outstation Station <span className="text-red-400">*</span>
+                  </label>
                   <select
                     required
                     value={sendDestination}
                     onChange={(e) => setSendDestination(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-sky-500 font-mono text-xs cursor-pointer"
+                    className="w-full bg-slate-900 border-2 border-amber-500/80 rounded-xl px-4 py-3 text-yellow-300 font-bold font-mono text-sm focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400 cursor-pointer shadow-md"
                   >
-                    <option value="">-- SELECT OUTSTATION --</option>
+                    <option value="" className="text-slate-400 bg-slate-950">-- SELECT OUTSTATION --</option>
                     {outstations.map((station) => (
-                      <option key={station} value={station}>
+                      <option key={station} value={station} className="text-yellow-300 bg-slate-900 font-bold">
                         {station} (Outstation Stock Hub)
                       </option>
                     ))}
@@ -469,16 +477,17 @@ export default function UldForms({ currentForm, ulds, onClose, onSuccess, token,
                 </div>
 
                 <div>
-                  <label className="block text-xs font-mono uppercase text-slate-400 mb-2">Search ULD Number</label>
+                  <label className="block text-xs font-mono uppercase text-slate-300 font-bold mb-1.5">Search Serial Number</label>
                   <input
                     type="text"
-                    placeholder="Search serial number..."
+                    placeholder="Search ULD serial (e.g. 1198, 10060)..."
                     value={sendSearch}
                     onChange={(e) => setSendSearch(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-sky-500 font-mono text-xs placeholder:text-slate-700"
+                    className="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-sky-400 font-mono text-xs placeholder:text-slate-500 shadow-inner"
                   />
                 </div>
               </div>
+            </div>
 
               <div>
                 <label className="block text-xs font-mono uppercase text-slate-400 mb-2">
@@ -632,7 +641,6 @@ export default function UldForms({ currentForm, ulds, onClose, onSuccess, token,
                   className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-sky-500 font-mono text-xs placeholder:text-slate-700"
                 />
               </div>
-            </div>
 
             <div className="flex flex-col-reverse sm:flex-row gap-4 pt-4 border-t border-slate-800">
               <button
@@ -655,19 +663,27 @@ export default function UldForms({ currentForm, ulds, onClose, onSuccess, token,
 
         {/* 4. RECEIVE ULD FORM (Adding at DAC Stock from Outstation) */}
         {currentForm === 'receive' && (
-          <form onSubmit={handleReceive} className="space-y-6">
-            <div className="border-b border-slate-800 pb-4">
+          <form onSubmit={handleReceive} className="space-y-6 pt-2">
+            <div className="border-b border-slate-800 pb-3">
               <h2 className="text-lg font-bold font-mono text-white tracking-wide flex items-center gap-2">
-                <PlaneLanding className="h-5 w-5 text-emerald-500" />
+                <PlaneLanding className="h-5 w-5 text-emerald-400" />
                 ADDING AT DAC STOCK FROM OUTSTATION
               </h2>
               <p className="text-xs text-slate-400 font-mono mt-1">RECEIVE INCOMING CARGO STORAGE UNITS</p>
             </div>
 
-            <div className="space-y-4">
+            {/* PROMINENT STATION SELECTION & SEARCH BOX */}
+            <div className="bg-slate-950/90 border-2 border-amber-500/60 rounded-2xl p-4 md:p-5 shadow-xl shadow-amber-950/20 my-4 space-y-4">
+              <div className="flex items-center gap-2 text-amber-400 font-mono text-xs font-bold uppercase tracking-wide">
+                <span className="bg-amber-500 text-slate-950 px-2 py-0.5 rounded font-black text-[11px]">STEP 1</span>
+                <span>SELECT ORIGIN OUTSTATION & SEARCH</span>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-mono uppercase text-slate-400 mb-2">Select Origin Station</label>
+                  <label className="block text-xs font-mono uppercase text-yellow-400 font-bold mb-1.5">
+                    Origin Outstation Station <span className="text-red-400">*</span>
+                  </label>
                   <select
                     required
                     value={receiveOrigin}
@@ -675,11 +691,11 @@ export default function UldForms({ currentForm, ulds, onClose, onSuccess, token,
                       setReceiveOrigin(e.target.value);
                       setSelectedReceiveIds([]);
                     }}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-sky-500 font-mono text-xs cursor-pointer"
+                    className="w-full bg-slate-900 border-2 border-amber-500/80 rounded-xl px-4 py-3 text-yellow-300 font-bold font-mono text-sm focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400 cursor-pointer shadow-md"
                   >
-                    <option value="">-- SELECT STATION --</option>
+                    <option value="" className="text-slate-400 bg-slate-950">-- SELECT STATION --</option>
                     {outstations.map((station) => (
-                      <option key={station} value={station}>
+                      <option key={station} value={station} className="text-yellow-300 bg-slate-900 font-bold">
                         {station}
                       </option>
                     ))}
@@ -687,17 +703,18 @@ export default function UldForms({ currentForm, ulds, onClose, onSuccess, token,
                 </div>
 
                 <div>
-                  <label className="block text-xs font-mono uppercase text-slate-400 mb-2">Search ULD Number</label>
+                  <label className="block text-xs font-mono uppercase text-slate-300 font-bold mb-1.5">Search Serial Number</label>
                   <input
                     type="text"
                     disabled={!receiveOrigin}
-                    placeholder="Search serial number..."
+                    placeholder="Search ULD serial (e.g. 10060, 1198)..."
                     value={receiveSearch}
                     onChange={(e) => setReceiveSearch(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-sky-500 font-mono text-xs placeholder:text-slate-700 disabled:opacity-50"
+                    className="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-sky-400 font-mono text-xs placeholder:text-slate-500 disabled:opacity-50 shadow-inner"
                   />
                 </div>
               </div>
+            </div>
 
               {receiveOrigin && (
                 <div className="space-y-4">
@@ -836,7 +853,6 @@ export default function UldForms({ currentForm, ulds, onClose, onSuccess, token,
                   </div>
                 </div>
               )}
-            </div>
 
             <div className="flex flex-col-reverse sm:flex-row gap-4 pt-4 border-t border-slate-800">
               <button
