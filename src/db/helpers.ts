@@ -364,12 +364,53 @@ export async function changeUldStatus(id: number, status: string, email: string)
 
 export async function getUldHistory(number: string) {
   try {
-    // Return history of ULD ordered by timestamp descending
-    // This allows 3-month track record or longer
-    return await db.select()
+    const rawSearch = number.trim();
+    if (!rawSearch) return [];
+
+    // Clean numeric or alphanumeric string for pattern matching
+    const cleanTerm = rawSearch.toLowerCase().replace(/[^a-z0-9]/gi, '');
+    const searchPattern = `%${cleanTerm}%`;
+
+    // 1. Query uldHistory table using case-insensitive partial match
+    const historyRecords = await db.select()
       .from(uldHistory)
-      .where(eq(uldHistory.uldNumber, number))
+      .where(
+        or(
+          eq(uldHistory.uldNumber, rawSearch.toUpperCase()),
+          sql`LOWER(${uldHistory.uldNumber}) LIKE ${searchPattern}`
+        )
+      )
       .orderBy(desc(uldHistory.timestamp));
+
+    if (historyRecords.length > 0) {
+      return historyRecords;
+    }
+
+    // 2. Fallback: If no history records exist yet in uld_history table, check active ULDs stock table
+    const activeMatch = await db.select()
+      .from(ulds)
+      .where(
+        or(
+          eq(ulds.number, rawSearch.toUpperCase()),
+          sql`LOWER(${ulds.number}) LIKE ${searchPattern}`
+        )
+      );
+
+    if (activeMatch.length > 0) {
+      return activeMatch.map(u => ({
+        id: u.id,
+        uldId: u.id,
+        uldNumber: u.number,
+        action: 'STATUS_CHECK',
+        originStation: u.currentStation,
+        destinationStation: u.currentStation,
+        performedBy: 'System Record',
+        remarks: `Active stock record at station ${u.currentStation} (${u.status} status)`,
+        timestamp: u.updatedAt || u.createdAt || new Date(),
+      }));
+    }
+
+    return [];
   } catch (error) {
     console.error('getUldHistory failed:', error);
     throw new Error('Database error while retrieving ULD history.', { cause: error });

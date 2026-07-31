@@ -527,7 +527,7 @@ export default function AdminPanel({
     setTrackingHistory([]);
     setError(null);
     try {
-      const res = await fetch(`/api/ulds/history/${searchUldNum.trim().toUpperCase()}`, {
+      const res = await fetch(`/api/ulds/history/${encodeURIComponent(searchUldNum.trim())}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
@@ -867,25 +867,32 @@ export default function AdminPanel({
 
                       <div className="bg-[#0b0f19] border border-slate-850 p-4 rounded-xl space-y-2">
                         <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
-                          <span className={`text-[10px] font-bold font-mono px-2 py-0.5 rounded border ${
-                            hist.action === 'CREATE' ? 'bg-emerald-950 text-emerald-400 border-emerald-900/40' :
-                            hist.action === 'SEND' ? 'bg-blue-950 text-blue-400 border-blue-900/40' :
-                            hist.action === 'RECEIVE' ? 'bg-violet-950 text-violet-400 border-violet-900/40' :
-                            hist.action === 'STATUS_CHANGE' ? 'bg-amber-950 text-amber-400 border-amber-900/40' :
-                            'bg-red-950 text-red-400 border-red-900/40'
-                          }`}>
-                            {hist.action}
-                          </span>
+                          <div className="flex items-center gap-2">
+                            <span className="bg-slate-800 text-yellow-300 font-bold font-mono text-xs px-2.5 py-0.5 rounded border border-slate-700">
+                              {hist.uldNumber}
+                            </span>
+                            <span className={`text-[10px] font-bold font-mono px-2 py-0.5 rounded border ${
+                              hist.action === 'CREATE' ? 'bg-emerald-950 text-emerald-400 border-emerald-900/40' :
+                              hist.action === 'SEND' ? 'bg-blue-950 text-blue-400 border-blue-900/40' :
+                              hist.action === 'RECEIVE' ? 'bg-violet-950 text-violet-400 border-violet-900/40' :
+                              hist.action === 'STATUS_CHANGE' ? 'bg-amber-950 text-amber-400 border-amber-900/40' :
+                              hist.action === 'STATUS_CHECK' ? 'bg-sky-950 text-sky-400 border-sky-900/40' :
+                              'bg-red-950 text-red-400 border-red-900/40'
+                            }`}>
+                              {hist.action}
+                            </span>
+                          </div>
                           <span className="text-xs text-slate-500 font-mono">
                             {new Date(hist.timestamp).toLocaleString('en-GB')}
                           </span>
                         </div>
 
                         <div className="text-sm font-semibold text-slate-200">
-                          {hist.action === 'SEND' && `Sent to station ${hist.destinationStation} from Dhaka`}
-                          {hist.action === 'RECEIVE' && `Received at Dhaka Stock from ${hist.originStation}`}
-                          {hist.action === 'CREATE' && `Initial storage registration at Dhaka`}
+                          {hist.action === 'SEND' && `Sent to station ${hist.destinationStation} from ${hist.originStation || 'DAC'}`}
+                          {hist.action === 'RECEIVE' && `Received at DAC Stock from ${hist.originStation}`}
+                          {hist.action === 'CREATE' && `Initial storage registration at ${hist.destinationStation || 'DAC'}`}
                           {hist.action === 'STATUS_CHANGE' && `Operational status update`}
+                          {hist.action === 'STATUS_CHECK' && `Current Station Stock Location: ${hist.destinationStation}`}
                           {hist.action === 'REMOVE' && `Removed from active status stock`}
                         </div>
 
