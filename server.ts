@@ -644,7 +644,7 @@ async function startServer() {
     }
   });
 
-  app.get('/api/admin/backups', requireAdmin, async (req: any, res) => {
+  app.get('/api/admin/backups', requireAuth, async (req: any, res) => {
     try {
       const backupsList = await getBackups();
       res.json(backupsList);
@@ -653,10 +653,10 @@ async function startServer() {
     }
   });
 
-  app.post('/api/admin/backups', requireAdmin, async (req: any, res) => {
+  app.post('/api/admin/backups', requireAuth, async (req: any, res) => {
     try {
       const { name, description } = req.body;
-      const email = req.user?.email || 'Admin';
+      const email = req.user?.email || 'User';
       if (!name) {
         return res.status(400).json({ error: 'Backup name is required' });
       }
@@ -667,10 +667,10 @@ async function startServer() {
     }
   });
 
-  app.post('/api/admin/backups/restore/:id', requireAdmin, async (req: any, res) => {
+  app.post('/api/admin/backups/restore/:id', requireAuth, async (req: any, res) => {
     try {
       const backupId = parseInt(req.params.id, 10);
-      const email = req.user?.email || 'Admin';
+      const email = req.user?.email || 'User';
       if (isNaN(backupId)) {
         return res.status(400).json({ error: 'Invalid backup ID' });
       }
@@ -682,9 +682,9 @@ async function startServer() {
   });
 
   // Export raw database JSON data
-  app.get('/api/admin/backup/export', requireAdmin, async (req: any, res) => {
+  app.get('/api/admin/backup/export', requireAuth, async (req: any, res) => {
     try {
-      const email = req.user?.email || 'Admin';
+      const email = req.user?.email || 'User';
       const data = await exportDatabaseData();
       await insertUserLog(email, 'DATABASE_EXPORT_JSON', 'SUCCESS', 'Downloaded full JSON database backup export file');
       broadcastRealtimeUpdate('logs_changed');
@@ -695,9 +695,9 @@ async function startServer() {
   });
 
   // Import raw database JSON data and restore
-  app.post('/api/admin/backup/import', requireAdmin, async (req: any, res) => {
+  app.post('/api/admin/backup/import', requireAuth, async (req: any, res) => {
     try {
-      const email = req.user?.email || 'Admin';
+      const email = req.user?.email || 'User';
       const result = await importDatabaseData(req.body, email);
       res.json(result);
     } catch (error: any) {

@@ -5,6 +5,7 @@ import { UserProfile, ULD, ULDHistory, UserLog, DBBackup } from '../types';
 interface AdminPanelProps {
   token: string;
   userEmail: string;
+  userRole?: string;
   ulds: ULD[];
   onClose: () => void;
   onRefreshData: () => void;
@@ -16,6 +17,7 @@ interface AdminPanelProps {
 export default function AdminPanel({
   token,
   userEmail,
+  userRole = 'user',
   ulds,
   onClose,
   onRefreshData,
@@ -577,27 +579,45 @@ export default function AdminPanel({
       {/* Tab Buttons */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-2 bg-slate-900 border border-slate-800 p-1.5 rounded-xl">
         <button
-          onClick={() => setActiveTab('alerts')}
+          onClick={() => {
+            if (userRole !== 'admin') {
+              if (showToast) showToast('ACCESS DENIED: Real-Time Access Threats requires Admin clearance.', 'error', 'SHIELD_WARN');
+            } else {
+              setActiveTab('alerts');
+            }
+          }}
           className={`flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-mono text-xs tracking-wider transition cursor-pointer ${
             activeTab === 'alerts'
               ? 'bg-sky-600 text-white shadow font-bold'
+              : userRole !== 'admin'
+              ? 'text-slate-600 cursor-not-allowed'
               : 'text-slate-400 hover:text-white hover:bg-slate-800'
           }`}
         >
           <ShieldAlert className="h-4 w-4" />
-          ALERTS ({alertsList.length})
+          <span>ALERTS {userRole === 'admin' && `(${alertsList.length})`}</span>
+          {userRole !== 'admin' && <span className="text-[10px] text-amber-500 font-bold">(ADMIN)</span>}
         </button>
 
         <button
-          onClick={() => setActiveTab('audits')}
+          onClick={() => {
+            if (userRole !== 'admin') {
+              if (showToast) showToast('ACCESS DENIED: Compliance Audit logs require Admin clearance.', 'error', 'SHIELD_WARN');
+            } else {
+              setActiveTab('audits');
+            }
+          }}
           className={`flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-mono text-xs tracking-wider transition cursor-pointer ${
             activeTab === 'audits'
               ? 'bg-sky-600 text-white shadow font-bold'
+              : userRole !== 'admin'
+              ? 'text-slate-600 cursor-not-allowed'
               : 'text-slate-400 hover:text-white hover:bg-slate-800'
           }`}
         >
           <Users className="h-4 w-4" />
-          AUDIT TRAIL
+          <span>AUDIT TRAIL</span>
+          {userRole !== 'admin' && <span className="text-[10px] text-amber-500 font-bold">(ADMIN)</span>}
         </button>
 
         <button
@@ -625,15 +645,24 @@ export default function AdminPanel({
         </button>
 
         <button
-          onClick={() => setActiveTab('users')}
+          onClick={() => {
+            if (userRole !== 'admin') {
+              if (showToast) showToast('ACCESS DENIED: Roles Manager requires Admin clearance.', 'error', 'SHIELD_WARN');
+            } else {
+              setActiveTab('users');
+            }
+          }}
           className={`flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-mono text-xs tracking-wider transition cursor-pointer col-span-2 md:col-span-1 ${
             activeTab === 'users'
               ? 'bg-sky-600 text-white shadow font-bold'
+              : userRole !== 'admin'
+              ? 'text-slate-600 cursor-not-allowed'
               : 'text-slate-400 hover:text-white hover:bg-slate-800'
           }`}
         >
           <Users className="h-4 w-4" />
-          ROLES MANAGER
+          <span>ROLES MANAGER</span>
+          {userRole !== 'admin' && <span className="text-[10px] text-amber-500 font-bold">(ADMIN)</span>}
         </button>
       </div>
 

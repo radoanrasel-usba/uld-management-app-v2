@@ -220,7 +220,10 @@ export default function App() {
 
     if (!userProfile || !token) return;
 
-    if (userProfile.role !== 'admin') {
+    // 'alerts', 'audits', and 'users' are strictly admin-only. 'tracking' and 'backups' are available to user role.
+    const isAdminOnlyTab = tab === 'alerts' || tab === 'audits' || tab === 'users';
+
+    if (userProfile.role !== 'admin' && isAdminOnlyTab) {
       // Trigger suspicious activity breach log silently
       try {
         await fetch('/api/audit/access-attempt', {
@@ -266,9 +269,13 @@ export default function App() {
     }
   };
 
-  // Safe handler for entering Admin Panel with breach alert mechanism
+  // Safe handler for entering Control Platform Hub
   const handleAdminPanelEnter = async () => {
-    handleTabClick('alerts');
+    if (userProfile?.role === 'admin') {
+      handleTabClick('alerts');
+    } else {
+      handleTabClick('tracking');
+    }
   };
 
   if (authLoading) {
@@ -481,7 +488,6 @@ export default function App() {
             <History className="h-4 w-4" />
             <span className="flex items-center justify-between w-full">
               <span>ULD History Search</span>
-              {userProfile?.role !== 'admin' && <span className="text-xs text-amber-500 font-mono font-bold uppercase shrink-0">(admin)</span>}
             </span>
           </button>
 
@@ -496,7 +502,6 @@ export default function App() {
             <Database className="h-4 w-4" />
             <span className="flex items-center justify-between w-full">
               <span>DATA BACKUP/RESTORE</span>
-              {userProfile?.role !== 'admin' && <span className="text-xs text-amber-500 font-mono font-bold uppercase shrink-0">(admin)</span>}
             </span>
           </button>
 
@@ -573,6 +578,7 @@ export default function App() {
             <AdminPanel
               token={token!}
               userEmail={firebaseUser.email}
+              userRole={userProfile?.role}
               ulds={ulds}
               onClose={() => setShowAdminPanel(false)}
               onRefreshData={handleRefreshData}
